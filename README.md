@@ -1,86 +1,95 @@
 # Threshold Selection Under a Non-Increasing Licence Constraint
 
-Code and data for the paper *"The Threshold Parameter in Robust Losses: What the
-Annealing Rule Is, What It Costs, and What It Buys."*
+Code for the min-annealing threshold rule used in robust low-rank recovery:
 
-The min-annealing rule `theta_k = min(theta_{k-1}, T(r_k))` is used in five published
-robust-recovery methods. This repository contains the analysis of what that rule
-guarantees and what the guarantee costs.
+```
+theta_k = min(theta_{k-1}, T(r_k))
+```
+
+Five published methods use this rule in exactly this form — hybrid ordinary-Welsch
+(HOW), hybrid quadratic-Frobenius (HQF), `l_{p,epsilon}` tensor completion,
+capped-Frobenius tensor completion, and robust elliptic localisation — with a
+different statistic `T` each time but the same update. This repository contains the
+solver, the numerical experiments, and the numbers behind every figure.
 
 ## What is here
 
 | directory | contents |
 |---|---|
-| `paper/` | the manuscript backbone (Markdown) |
-| `code/verify/` | the theory checks: frontier, exchange rate, price, identities |
-| `code/experiments/` | the solver experiments: capped-Frobenius PBCD, relaxations |
-| `results/` | numbers behind every table, as JSON/CSV |
+| `code/experiments/` | capped-Frobenius solver and the experiment scripts |
+| `code/verify/` | numerical checks of the identities the analysis rests on |
+| `results/` | the numbers behind every figure, as JSON/CSV |
 | `figures/` | three figures |
 
-## The three results
-
-1. **Characterisation.** The running minimum is the pointwise greatest element of the
-   set of causal non-increasing schedules that never exceed the current estimate. It is
-   *not* an isotonic regression of any order, and its L-infinity deviation is exactly
-   twice that of the isotonic fit.
-
-2. **Pricing.** For any non-increasing schedule, `bias + over-trust >= b_K`. The shifted
-   running minimum attains the bound pathwise with an exchange rate of exactly one. The
-   price has a closed quadrature:
-
-   ```
-   b_K = integral_0^inf [1 - F(t)^K - (1 - F(t))^K] dt
-   ```
-
-   which grows like `sqrt(2 ln K)` under Gaussian residuals and like `K^(1/nu)` under
-   heavy tails.
-
-3. **Scope.** On a real solver the rule is reproduced exactly, but the price is governed
-   by the solver's effective history (1-3 iterations), not the iteration count (200).
-   A controlled experiment shows that the threshold path does not determine which
-   observations are retained, and that the retained set affects reconstruction
-   independently of the frontier.
-
-## Reproducing
+## Quick start
 
 Requires Python 3.10+, numpy, scipy, matplotlib, joblib, pandas.
 
 ```bash
-export OPENBLAS_NUM_THREADS=1     # avoid oversubscription when using joblib
+export OPENBLAS_NUM_THREADS=1     # avoid thread oversubscription under joblib
 
-python code/verify/verify_core.py         # frontier, exchange, isotonic comparison
-python code/verify/verify_final.py        # exact quadrature vs simulation
-python code/verify/verify_regen.py        # price tables, expansion errors
-python code/verify/verify_draft_numbers.py # audit: text figures vs stored results
-
-python code/experiments/e1_frontier.py    # figure 1
-python code/experiments/e2_price.py       # figure 2
+python code/experiments/e1_frontier.py    # figure 1: the frontier
+python code/experiments/e2_price.py       # figure 2: the price
 python code/experiments/e3_solver_v2.py   # solver relaxation scan
 python code/experiments/e5c_controlled.py # controlled keep-mask comparison
 ```
 
-Total runtime for everything above is under fifteen minutes on a laptop CPU.
+Everything runs in under fifteen minutes on a laptop CPU. No GPU is used, and none
+is needed: the per-iteration cost is `O(n r^2)` with `n` around 100 and `r` around 3,
+so the arithmetic is smaller than the interpreter overhead around it.
 
-## A note on the solver
+## The solver
 
-`code/experiments/pbcd.py` implements the proximal block-coordinate step of Li et al.,
-"Robust Tensor Completion via Capped Frobenius Norm" (Algorithm 1, equations 28 and
-38-41), reduced to the matrix case. The proximal term is retained: dropping it turns
-the update into plain alternating least squares, which is a different algorithm and is
-not a valid baseline.
+`code/experiments/pbcd.py` implements the proximal block-coordinate step of
 
-Initialisation is from the SVD of the Winsorised observation matrix. An unwinsorised
-SVD follows the outlier block rather than the signal, because the outlier block's
-Frobenius norm exceeds the signal's; on the settings used here that alone moves the
-reconstruction error from 0.035 to 0.81.
+> X.-P. Li et al., "Robust Tensor Completion via Capped Frobenius Norm,"
+> IEEE Trans. Neural Netw. Learn. Syst., 2024.
+
+Algorithm 1, equations (28) and (38)-(41), reduced to the matrix case. Two things
+about it are worth knowing before you use it.
+
+**The proximal term matters.** Equation (40) keeps the previous iterate,
+
+```
+y^{k+1} = (A_l^T A_l + lambda I)^{-1} (A_l^T g_l + lambda y^k),
+```
+
+and dropping the `lambda y^k` turns the update into plain alternating least squares.
+That is a different algorithm, it does not have the descent property, and it is not a
+valid baseline against the published method. `pbcd.py` keeps the term.
+
+**Initialisation matters more than you would expect.** The natural choice, the rank-`r`
+SVD of the masked observation matrix, fails badly once the observations are corrupted:
+the outlier block's Frobenius norm exceeds the signal's, so the leading singular
+vectors follow the outliers. On the settings used here that alone moves the
+reconstruction error from 0.035 to 0.81 — from working to useless. The fix is to
+Winsorise the observations at `3 x MADN` before the decomposition, which is what
+`init_winsor` does. Every experiment in this repository uses it.
+
+## Data conventions
+
+Simulation columns are cross-checks against quadrature, never the other way round:
+where the two disagree beyond two standard errors, the simulation is presumed at fault
+until the quadrature is shown otherwise. Monte-Carlo replication counts grow with the
+problem size rather than shrinking, because the variance of an extreme order statistic
+increases with the number of draws.
+
+Seeds: `20261102` for the solver experiments, `112358` for the exchange table,
+`60601` for the L-infinity identity.
 
 ## Scope
 
-The theory is about the *threshold sequence*. It does not claim that a schedule with
-lower threshold error reconstructs better, and section 7.5 of the paper isolates the
-reason: the retained-observation set is a further decision that the bias/over-trust
-accounting does not price.
+The analysis concerns the threshold sequence. It does not claim that a schedule with
+lower threshold error reconstructs better — the retained-observation set is a further
+decision, and the experiments here show it moves the reconstruction independently of
+any threshold quantity.
 
-The theory also assumes independent, identically distributed threshold estimates. In a
-converging solver that assumption fails, and the operative count is the transient
-length. A law for the effective count is left open.
+The analysis also assumes independently distributed threshold estimates. In a
+converging solver that assumption fails: the estimate freezes after a few iterations,
+so the operative count is the transient length rather than the iteration count. A law
+for that effective count is not given here. The scripts record the full threshold path
+per iteration so that the question can be worked on directly.
+
+## Citation
+
+Please cite the paper once it is available. Until then, cite this repository.
