@@ -1,0 +1,317 @@
+{
+  "projection_checks": [
+    {
+      "case": "monotone",
+      "theta": [
+        5.0,
+        4.0,
+        3.0,
+        2.0
+      ],
+      "running_min": [
+        5.0,
+        4.0,
+        3.0,
+        2.0
+      ],
+      "linf_isotonic": [
+        5.0,
+        4.0,
+        3.0,
+        2.0
+      ],
+      "l2_isotonic": [
+        5.0,
+        4.0,
+        3.0,
+        2.0
+      ],
+      "linf_err_running_min": 0.0,
+      "linf_err_isotonic": 0.0,
+      "l2_err_running_min": 0.0,
+      "l2_err_isotonic": 0.0,
+      "running_min_is_linf_projection": true
+    },
+    {
+      "case": "single_drawup",
+      "theta": [
+        3.0,
+        1.0,
+        2.0
+      ],
+      "running_min": [
+        3.0,
+        1.0,
+        1.0
+      ],
+      "linf_isotonic": [
+        3.5,
+        1.5,
+        1.5
+      ],
+      "l2_isotonic": [
+        3.0,
+        1.5,
+        1.5
+      ],
+      "linf_err_running_min": 1.0,
+      "linf_err_isotonic": 0.5,
+      "l2_err_running_min": 1.0,
+      "l2_err_isotonic": 0.7071067811865476,
+      "running_min_is_linf_projection": false
+    },
+    {
+      "case": "drawup_recovery",
+      "theta": [
+        3.0,
+        1.0,
+        2.0,
+        1.5
+      ],
+      "running_min": [
+        3.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "linf_isotonic": [
+        3.5,
+        1.5,
+        1.5,
+        1.0
+      ],
+      "l2_isotonic": [
+        3.0,
+        1.5,
+        1.5,
+        1.5
+      ],
+      "linf_err_running_min": 1.0,
+      "linf_err_isotonic": 0.5,
+      "l2_err_running_min": 1.118033988749895,
+      "l2_err_isotonic": 0.7071067811865476,
+      "running_min_is_linf_projection": false
+    },
+    {
+      "case": "double_bump",
+      "theta": [
+        4.0,
+        1.0,
+        2.5,
+        1.2,
+        3.0
+      ],
+      "running_min": [
+        4.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "linf_isotonic": [
+        5.0,
+        2.0,
+        2.0,
+        2.0,
+        2.0
+      ],
+      "l2_isotonic": [
+        4.0,
+        1.925,
+        1.925,
+        1.925,
+        1.925
+      ],
+      "linf_err_running_min": 2.0,
+      "linf_err_isotonic": 1.0,
+      "l2_err_running_min": 2.5079872407968904,
+      "l2_err_isotonic": 1.6933694221876099,
+      "running_min_is_linf_projection": false
+    },
+    {
+      "case": "late_spike",
+      "theta": [
+        1.0,
+        1.0,
+        1.0,
+        5.0
+      ],
+      "running_min": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "linf_isotonic": [
+        3.0,
+        3.0,
+        3.0,
+        3.0
+      ],
+      "l2_isotonic": [
+        2.0,
+        2.0,
+        2.0,
+        2.0
+      ],
+      "linf_err_running_min": 4.0,
+      "linf_err_isotonic": 2.0,
+      "l2_err_running_min": 4.0,
+      "l2_err_isotonic": 3.4641016151377544,
+      "running_min_is_linf_projection": false
+    },
+    {
+      "case": "canonical5",
+      "theta": [
+        3.0,
+        1.0,
+        2.0,
+        1.5,
+        2.6
+      ],
+      "running_min": [
+        3.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "linf_isotonic": [
+        3.8,
+        1.8,
+        1.8,
+        1.8,
+        1.8
+      ],
+      "l2_isotonic": [
+        3.0,
+        1.775,
+        1.775,
+        1.775,
+        1.775
+      ],
+      "linf_err_running_min": 1.6,
+      "linf_err_isotonic": 0.8,
+      "l2_err_running_min": 1.9519221295943137,
+      "l2_err_isotonic": 1.1863810517704674,
+      "running_min_is_linf_projection": false
+    }
+  ],
+  "linf_error_ratio": {
+    "n": 381,
+    "median": 2.0,
+    "q10": 1.9999999999999993,
+    "q90": 2.0000000000000004,
+    "min": 1.9999999999999878,
+    "max": 2.0000000000000036,
+    "frac_above_1": 1.0
+  },
+  "maximality": {
+    "n_paths": 2000,
+    "max_abs_difference": 0.0
+  },
+  "bias": [
+    {
+      "k": 10,
+      "n": 500,
+      "predicted": 0.09597051824376163,
+      "simulated": 0.06884256856210631,
+      "ratio": 0.7173303825165213,
+      "mc_se": 0.0002961401424848655
+    },
+    {
+      "k": 10,
+      "n": 5000,
+      "predicted": 0.03034854258770293,
+      "simulated": 0.021789717015407432,
+      "ratio": 0.7179823199891158,
+      "mc_se": 9.288345806558488e-05
+    },
+    {
+      "k": 32,
+      "n": 500,
+      "predicted": 0.11774100225154747,
+      "simulated": 0.09248071351833478,
+      "ratio": 0.7854588609731263,
+      "mc_se": 0.00024620422125454705
+    },
+    {
+      "k": 32,
+      "n": 5000,
+      "predicted": 0.037232974110590344,
+      "simulated": 0.029362961961730036,
+      "ratio": 0.7886278940413249,
+      "mc_se": 7.806647018434362e-05
+    },
+    {
+      "k": 100,
+      "n": 500,
+      "predicted": 0.13572280848830223,
+      "simulated": 0.11221882311125467,
+      "ratio": 0.8268236146979426,
+      "mc_se": 0.00021724892028511002
+    },
+    {
+      "k": 100,
+      "n": 5000,
+      "predicted": 0.042919320525786946,
+      "simulated": 0.03555007341002536,
+      "ratio": 0.828300005091321,
+      "mc_se": 6.840719312265376e-05
+    },
+    {
+      "k": 300,
+      "n": 500,
+      "predicted": 0.15104678049738365,
+      "simulated": 0.1287331278520434,
+      "ratio": 0.8522732323597805,
+      "mc_se": 0.0001937639012466881
+    },
+    {
+      "k": 300,
+      "n": 5000,
+      "predicted": 0.04776518596072332,
+      "simulated": 0.04073502952840768,
+      "ratio": 0.8528184012913411,
+      "mc_se": 6.120992650928927e-05
+    }
+  ],
+  "quantile_direction": [
+    {
+      "case": "gaussian",
+      "madn": 1.0019602599778603,
+      "q90": 1.2834483117027438,
+      "q95": 1.6465473216143056,
+      "q99": 2.3313919014603424,
+      "q99_over_madn": 2.3268307083475124,
+      "three_madn": 3.005880779933581
+    },
+    {
+      "case": "t3",
+      "madn": 0.6547403218290326,
+      "q90": 0.9455472461734579,
+      "q95": 1.3596444187088916,
+      "q99": 2.5941362569537048,
+      "q99_over_madn": 3.962084158352923,
+      "three_madn": 1.964220965487098
+    },
+    {
+      "case": "contam10",
+      "madn": 1.1090973123314238,
+      "q90": 1.5203392116274734,
+      "q95": 2.2438519513602766,
+      "q99": 10.241200872419544,
+      "q99_over_madn": 9.233816328426226,
+      "three_madn": 3.3272919369942713
+    },
+    {
+      "case": "contam30",
+      "madn": 1.4553965880971431,
+      "q90": 3.461997980404635,
+      "q95": 7.809363312587708,
+      "q99": 14.6889022705199,
+      "q99_over_madn": 10.09271451551559,
+      "three_madn": 4.36618976429143
+    }
+  ]
+}
